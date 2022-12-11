@@ -14,40 +14,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   switchCurrentPage(int index) => setState(() => currentIndex = index);
   int currentIndex = 0;
-  List<Widget> pages = [
+  List<Widget> pages = const [
     Explore(),
     Lessons(),
-    Categories(
-      isTab: true,
-    ),
+    Categories(),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
         elevation: 8.0,
         selectedItemColor: primaryColor,
         onTap: (value) => setState(() => currentIndex = value),
         items: const [
           BottomNavigationBarItem(
-            activeIcon: Icon(
-              Icons.home_filled,
-              color: primaryColor,
-            ),
             icon: Icon(Icons.home),
             label: "Explore",
           ),
           BottomNavigationBarItem(
-            activeIcon: Icon(
-              Icons.class_,
-              color: primaryColor,
-            ),
             icon: Icon(Icons.class_),
             label: "Lessons",
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.category), label: "Categories"),
+            icon: Icon(Icons.category),
+            label: "Categories",
+          ),
         ],
       ),
       body: pages[currentIndex],

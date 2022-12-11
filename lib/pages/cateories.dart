@@ -4,8 +4,7 @@ import 'package:e_learning_app/widgets/category_card.dart';
 import 'package:flutter/material.dart';
 
 class Categories extends StatefulWidget {
-  bool isTab = false;
-  Categories({super.key, this.isTab = false});
+  const Categories({super.key});
 
   @override
   State<Categories> createState() => _CategoriesState();
@@ -39,11 +38,22 @@ class _CategoriesState extends State<Categories> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Select Category",
+          style: TextStyle(
+            fontSize: 26,
+            color: backgroundColor,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: Column(
         children: [
           Container(
             color: primaryColor,
-            height: 250,
+            height: 130,
             width: double.maxFinite,
             padding: const EdgeInsets.all(20.0),
             child: SafeArea(
@@ -51,24 +61,6 @@ class _CategoriesState extends State<Categories> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  !widget.isTab
-                      ? Row(
-                          children: [
-                            IconButton(
-                              color: Colors.white,
-                              onPressed: () => Navigator.of(context).pop(),
-                              icon: Icon(Icons.arrow_back),
-                            ),
-                          ],
-                        )
-                      : SizedBox(),
-                  const Text(
-                    "Select Category",
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: backgroundColor,
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Container(

@@ -6,6 +6,7 @@ class Lesson {
   String? category;
   String? tutor;
   String? addedAt;
+  String? lessonClass;
 
   Lesson(
       {this.title,
@@ -13,6 +14,7 @@ class Lesson {
       this.video,
       this.category,
       this.thumbnail,
+      this.lessonClass,
       this.tutor,
       this.addedAt});
 
@@ -23,6 +25,7 @@ class Lesson {
     video = json["video"];
     category = json["category"];
     tutor = json["tutor"];
+    lessonClass = json["lessonClass"];
     addedAt = json["added_at"];
   }
 
@@ -31,6 +34,7 @@ class Lesson {
     data["title"] = title;
     data["note"] = note;
     data["thumbnail"] = thumbnail;
+    data["lessonClass"] = lessonClass;
     data["video"] = video;
     data["category"] = category;
     data["tutor"] = tutor;
