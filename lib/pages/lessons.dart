@@ -1,5 +1,5 @@
-import 'package:e_learning_app/constants.dart';
-import 'package:e_learning_app/lesson_data.dart';
+import 'package:e_learning_app/data/constants.dart';
+import 'package:e_learning_app/data/lesson_data.dart';
 import 'package:e_learning_app/widgets/lesson_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -38,6 +38,9 @@ class _LessonsState extends State<Lessons> {
       lessonClass: "JSS Two",
     ),
   ];
+  final TextEditingController _searchController = TextEditingController();
+  String _searchText = "";
+  String _className = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,19 +53,53 @@ class _LessonsState extends State<Lessons> {
           ),
         ),
         elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: DropdownButton<String>(
+              value: _className,
+              icon: const Icon(
+                Icons.sort,
+                color: backgroundColor,
+              ),
+              items: const [
+                DropdownMenuItem(
+                  value: "",
+                  child: Text("All"),
+                ),
+                DropdownMenuItem(
+                  value: "JSS One",
+                  child: Text("JSS One"),
+                ),
+              ],
+              onChanged: (value) => setState(
+                () {
+                  _className = value!;
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
           Container(
             color: primaryColor,
-            height: widget.category == null ? 130 : 200,
+            height: widget.category == null ? 130 : 150,
             width: double.maxFinite,
             child: SafeArea(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(widget.category ?? ""),
+                  Text(
+                    widget.category ?? "",
+                    style: const TextStyle(
+                      fontSize: 28.0,
+                      fontWeight: FontWeight.w600,
+                      color: backgroundColor,
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Container(
@@ -73,12 +110,16 @@ class _LessonsState extends State<Lessons> {
                         color: backgroundColor,
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      child: const TextField(
-                        textAlignVertical: TextAlignVertical(y: 0),
-                        style: TextStyle(
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: (value) => setState(() {
+                          _searchText = value;
+                        }),
+                        textAlignVertical: const TextAlignVertical(y: 0),
+                        style: const TextStyle(
                           fontSize: 18.0,
                         ),
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 14.0,
@@ -96,6 +137,15 @@ class _LessonsState extends State<Lessons> {
             child: SingleChildScrollView(
               child: Column(
                 children: lessons
+                    .where(
+                      (element) => element.lessonClass!
+                          .toLowerCase()
+                          .contains(_className),
+                    )
+                    .where(
+                      (element) =>
+                          element.title!.toLowerCase().contains(_searchText),
+                    )
                     .map(
                       (e) => LessonTile(lesson: e),
                     )

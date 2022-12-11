@@ -1,5 +1,5 @@
-import 'package:e_learning_app/constants.dart';
-import 'package:e_learning_app/lesson_data.dart';
+import 'package:e_learning_app/data/constants.dart';
+import 'package:e_learning_app/data/lesson_data.dart';
 import 'package:e_learning_app/pages/lesson_details.dart';
 import 'package:flutter/material.dart';
 

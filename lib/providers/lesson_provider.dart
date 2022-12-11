@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:e_learning_app/constants.dart';
+import 'package:e_learning_app/data/constants.dart';
 import 'package:flutter/foundation.dart';
-import 'package:e_learning_app/lesson_data.dart';
-import 'package:e_learning_app/category_data.dart' as category;
+import 'package:e_learning_app/data/lesson_data.dart';
+import 'package:e_learning_app/data/category_data.dart' as category;
 import 'package:http/http.dart' as http;
 
 class LessonProvider extends ChangeNotifier {

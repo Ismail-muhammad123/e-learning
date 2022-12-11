@@ -1,14 +1,11 @@
-import 'dart:ui';
-
-import 'package:e_learning_app/category_data.dart';
-import 'package:e_learning_app/constants.dart';
-import 'package:e_learning_app/lesson_data.dart';
+import 'package:e_learning_app/data/category_data.dart';
+import 'package:e_learning_app/data/constants.dart';
+import 'package:e_learning_app/data/lesson_data.dart';
 import 'package:e_learning_app/pages/cateories.dart';
 import 'package:e_learning_app/pages/lessons.dart';
 import 'package:e_learning_app/widgets/category_card.dart';
 import 'package:e_learning_app/widgets/lesson_explore_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class Explore extends StatefulWidget {
   const Explore({super.key});
@@ -78,7 +75,7 @@ class _ExploreState extends State<Explore> {
           color: primaryColor,
           height: 250,
           width: double.maxFinite,
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: SafeArea(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -145,7 +142,7 @@ class _ExploreState extends State<Explore> {
                         GestureDetector(
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => Categories(),
+                              builder: (context) => const Categories(),
                             ),
                           ),
                           child: const Text(

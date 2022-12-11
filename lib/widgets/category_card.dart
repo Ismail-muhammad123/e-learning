@@ -1,5 +1,5 @@
-import 'package:e_learning_app/category_data.dart';
-import 'package:e_learning_app/constants.dart';
+import 'package:e_learning_app/data/category_data.dart';
+import 'package:e_learning_app/data/constants.dart';
 import 'package:flutter/material.dart';
 
 class CategoryCard extends StatelessWidget {

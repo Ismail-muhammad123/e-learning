@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:e_learning_app/constants.dart';
+import 'package:e_learning_app/data/constants.dart';
 import 'package:e_learning_app/pages/home.dart';
 import 'package:flutter/material.dart';
 
