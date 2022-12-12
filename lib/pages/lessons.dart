@@ -1,7 +1,10 @@
+import 'package:e_learning_app/data/category_data.dart';
 import 'package:e_learning_app/data/constants.dart';
 import 'package:e_learning_app/data/lesson_data.dart';
+import 'package:e_learning_app/providers/lesson_provider.dart';
 import 'package:e_learning_app/widgets/lesson_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Lessons extends StatefulWidget {
   final String? category;
@@ -12,35 +15,10 @@ class Lessons extends StatefulWidget {
 }
 
 class _LessonsState extends State<Lessons> {
-  List<Lesson> lessons = [
-    Lesson(
-      title: "Introduction to Calculus",
-      note: "this is an introduction to calculus",
-      tutor: "Ismail Muhammad",
-      thumbnail:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/0a759f8138be06b43a447b00c8a6e392.jpg",
-      video:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/DJ%20Snake,%20Lauv%20-%20A%20Different%20Way%20(Official%20Video).mp4",
-      category: "Mathematics",
-      addedAt: "12/12/2020",
-      lessonClass: "JSS One",
-    ),
-    Lesson(
-      title: "Introduction Mobile App development",
-      note: "this is an introduction to calculus",
-      tutor: "Ismail Muhammad",
-      thumbnail:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/8EQSIREC-large-removebg-preview.png",
-      video:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/DJ%20Snake,%20Lauv%20-%20A%20Different%20Way%20(Official%20Video).mp4",
-      category: "Mathematics",
-      addedAt: "12/12/2020",
-      lessonClass: "JSS Two",
-    ),
-  ];
   final TextEditingController _searchController = TextEditingController();
   String _searchText = "";
   String _className = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,22 +113,45 @@ class _LessonsState extends State<Lessons> {
           ),
           Flexible(
             child: SingleChildScrollView(
-              child: Column(
-                children: lessons
-                    .where(
-                      (element) => element.lessonClass!
-                          .toLowerCase()
-                          .contains(_className),
-                    )
-                    .where(
-                      (element) =>
-                          element.title!.toLowerCase().contains(_searchText),
-                    )
-                    .map(
-                      (e) => LessonTile(lesson: e),
-                    )
-                    .toList(),
-              ),
+              child: FutureBuilder<List<Lesson>?>(
+                  future: context.read<LessonProvider>().lessons(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text("No Lesson found"),
+                      );
+                    }
+                    return Column(
+                      children: snapshot.data!
+                          .where(
+                            (element) => widget.category != null
+                                ? element.category == widget.category!
+                                : true,
+                          )
+                          .where(
+                            (element) => element.level != null
+                                ? element.level!
+                                    .toLowerCase()
+                                    .contains(_className)
+                                : true,
+                          )
+                          .where(
+                            (element) => element.title!
+                                .toLowerCase()
+                                .contains(_searchText),
+                          )
+                          .map(
+                            (e) => LessonTile(lesson: e),
+                          )
+                          .toList(),
+                    );
+                  }),
             ),
           )
         ],

@@ -6,7 +6,7 @@ class Lesson {
   String? category;
   String? tutor;
   String? addedAt;
-  String? lessonClass;
+  String? level;
 
   Lesson(
       {this.title,
@@ -14,18 +14,18 @@ class Lesson {
       this.video,
       this.category,
       this.thumbnail,
-      this.lessonClass,
+      this.level,
       this.tutor,
       this.addedAt});
 
-  Lesson.fromJson(Map<String, dynamic> json) {
+  Lesson.fromJson(Map json) {
     title = json["title"];
     note = json["note"];
     thumbnail = json["thumbnail"];
     video = json["video"];
     category = json["category"];
     tutor = json["tutor"];
-    lessonClass = json["lessonClass"];
+    level = json["level"];
     addedAt = json["added_at"];
   }
 
@@ -34,7 +34,7 @@ class Lesson {
     data["title"] = title;
     data["note"] = note;
     data["thumbnail"] = thumbnail;
-    data["lessonClass"] = lessonClass;
+    data["level"] = level;
     data["video"] = video;
     data["category"] = category;
     data["tutor"] = tutor;

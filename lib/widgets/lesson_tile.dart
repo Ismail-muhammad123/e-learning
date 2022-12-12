@@ -2,6 +2,7 @@ import 'package:e_learning_app/data/constants.dart';
 import 'package:e_learning_app/data/lesson_data.dart';
 import 'package:e_learning_app/pages/lesson_details.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class LessonTile extends StatelessWidget {
   final Lesson lesson;
@@ -43,6 +44,7 @@ class LessonTile extends StatelessWidget {
                   children: [
                     Image.network(
                       lesson.thumbnail!,
+                      errorBuilder: (context, error, stackTrace) => Container(),
                       width: double.maxFinite,
                       height: 200,
                       fit: BoxFit.fitHeight,
@@ -127,14 +129,18 @@ class LessonTile extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Text(lesson.lessonClass ?? "")
+                          Text(lesson.level ?? "None")
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            "Added on: ${lesson.addedAt ?? ''}",
+                            DateFormat.yMd()
+                                .format(
+                                  DateTime.parse(lesson.addedAt ?? ""),
+                                )
+                                .toString(),
                             style: TextStyle(
                               color: textColor.withOpacity(0.5),
                             ),

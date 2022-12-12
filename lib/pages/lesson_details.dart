@@ -2,6 +2,7 @@ import 'package:chewie/chewie.dart';
 import 'package:e_learning_app/data/constants.dart';
 import 'package:e_learning_app/data/lesson_data.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
 
 class LessonDetailsPage extends StatefulWidget {
@@ -128,7 +129,7 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      Text(widget.lesson.lessonClass ?? ""),
+                      Text(widget.lesson.level ?? ""),
                       Divider(),
                       Text(
                         "Added on:",
@@ -138,7 +139,13 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      Text(widget.lesson.addedAt ?? "")
+                      Text(
+                        DateFormat.yMd()
+                            .format(
+                              DateTime.parse(widget.lesson.addedAt ?? ""),
+                            )
+                            .toString(),
+                      )
                     ],
                   ),
                 ),
