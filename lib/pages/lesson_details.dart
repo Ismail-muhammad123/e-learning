@@ -24,11 +24,6 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
   void initState() {
     _videoPlayerController =
         VideoPlayerController.network(widget.lesson.video!);
-    // ..initialize().then(
-    //   (value) => setState(
-    //     () {},
-    //   ),
-    // );
     _chewieController = ChewieController(
         videoPlayerController: _videoPlayerController,
         autoPlay: true,
@@ -39,7 +34,7 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
         showOptions: true,
         placeholder: Container(
           alignment: Alignment.center,
-          child: CircularProgressIndicator(
+          child: const CircularProgressIndicator(
             color: primaryColor,
           ),
         ));
@@ -100,7 +95,7 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Divider(),
+                      const Divider(),
                       Text(
                         "Category:",
                         style: TextStyle(
@@ -110,7 +105,7 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
                         ),
                       ),
                       Text(widget.lesson.category ?? ""),
-                      Divider(),
+                      const Divider(),
                       Text(
                         "Tutor:",
                         style: TextStyle(
@@ -120,7 +115,7 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
                         ),
                       ),
                       Text(widget.lesson.tutor ?? ""),
-                      Divider(),
+                      const Divider(),
                       Text(
                         "Class:",
                         style: TextStyle(
@@ -130,7 +125,7 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
                         ),
                       ),
                       Text(widget.lesson.level ?? ""),
-                      Divider(),
+                      const Divider(),
                       Text(
                         "Added on:",
                         style: TextStyle(

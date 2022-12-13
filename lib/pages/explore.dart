@@ -3,9 +3,11 @@ import 'package:e_learning_app/data/constants.dart';
 import 'package:e_learning_app/data/lesson_data.dart';
 import 'package:e_learning_app/pages/cateories.dart';
 import 'package:e_learning_app/pages/lessons.dart';
+import 'package:e_learning_app/providers/lesson_provider.dart';
 import 'package:e_learning_app/widgets/category_card.dart';
 import 'package:e_learning_app/widgets/lesson_explore_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Explore extends StatefulWidget {
   const Explore({super.key});
@@ -16,6 +18,19 @@ class Explore extends StatefulWidget {
 
 class _ExploreState extends State<Explore> {
   final TextEditingController _searchController = TextEditingController();
+
+    Future<List<Category>> getCategories() async {
+    List<Category>? categories =
+        await context.read<LessonProvider>().categories();
+    return categories!
+        .sublist(0, categories.length >= 6 ? 5 : categories.length);
+  }
+
+  Future<List<Lesson>> getLessons() async {
+    List<Lesson>? lessons = await context.read<LessonProvider>().lessons();
+    return lessons!.sublist(0, categories.length >= 6 ? 5 : categories.length);
+  }
+
 
   @override
   void dispose() {

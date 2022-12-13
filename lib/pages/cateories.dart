@@ -1,7 +1,10 @@
 import 'package:e_learning_app/data/category_data.dart';
 import 'package:e_learning_app/data/constants.dart';
+import 'package:e_learning_app/data/lesson_data.dart';
+import 'package:e_learning_app/providers/lesson_provider.dart';
 import 'package:e_learning_app/widgets/category_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Categories extends StatefulWidget {
   const Categories({super.key});
@@ -11,30 +14,6 @@ class Categories extends StatefulWidget {
 }
 
 class _CategoriesState extends State<Categories> {
-  List<Category> categories = [
-    Category(
-      title: "Web dev",
-      description: "Web development",
-      image:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/0a759f8138be06b43a447b00c8a6e392.jpg",
-      addedAt: "12/12/2022",
-    ),
-    Category(
-      title: "Mobile dev",
-      description: "Web development",
-      image:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/0a759f8138be06b43a447b00c8a6e392.jpg",
-      addedAt: "12/12/2022",
-    ),
-    Category(
-      title: "Web3 dev",
-      description: "Web development",
-      image:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/8EQSIREC-large-removebg-preview.png",
-      addedAt: "12/12/2022",
-    ),
-  ];
-
   final TextEditingController _searchController = TextEditingController();
   String _searchText = "";
 
@@ -104,21 +83,43 @@ class _CategoriesState extends State<Categories> {
             ),
           ),
           Flexible(
-            child: SingleChildScrollView(
-              child: Column(
-                children: categories
-                    .where(
-                      (element) =>
-                          element.title!.toLowerCase().contains(_searchText),
-                    )
-                    .map(
-                      (e) => CategoryTile(
-                        category: e,
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
+            child: FutureBuilder<List<Category?>?>(
+                future: context.read<LessonProvider>().categories(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(
+                      width: double.maxFinite,
+                      height: double.maxFinite,
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Container(
+                      width: double.maxFinite,
+                      height: double.maxFinite,
+                      alignment: Alignment.center,
+                      child: Text("No Categories found"),
+                    );
+                  }
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: snapshot.data!
+                          .where(
+                            (element) => element!.title!
+                                .toLowerCase()
+                                .contains(_searchText),
+                          )
+                          .map(
+                            (e) => CategoryTile(
+                              category: e!,
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  );
+                }),
           )
         ],
       ),

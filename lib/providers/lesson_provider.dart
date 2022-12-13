@@ -10,23 +10,19 @@ class LessonProvider extends ChangeNotifier {
   Future<List<category.Category>?>? categories() async {
     var url = Uri.http(apiBaseUrl, categoryPath);
 
-    return await http
-        .get(url)
-        .then((value) => value.statusCode == 200
-            ? jsonDecode(value.body) as List<Map<String, dynamic>>
-            : null)
-        .then((value) =>
-            value!.map((e) => category.Category.fromJson(e)).toList());
-  }
-
-  Future<List<Lesson>?>? lessons() async {
-    var url = Uri.http(apiBaseUrl, lessonPath);
-
     var res = await http.get(url);
 
     var jsonResponse = json.decode(res.body) as List;
 
-    print(jsonResponse.first);
+    return jsonResponse.map((e) => category.Category.fromJson(e)).toList();
+  }
+
+  Future<List<Lesson>?>? lessons() async {
+    var url = Uri.https(apiBaseUrl, lessonPath);
+
+    var res = await http.get(url);
+
+    var jsonResponse = json.decode(res.body) as List;
 
     return jsonResponse.map((e) => Lesson.fromJson(e)).toList();
   }

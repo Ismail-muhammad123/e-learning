@@ -1,4 +1,3 @@
-
 class Level {
   String? name;
 
@@ -9,8 +8,8 @@ class Level {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["name"] = name;
-    return _data;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["name"] = name;
+    return data;
   }
 }

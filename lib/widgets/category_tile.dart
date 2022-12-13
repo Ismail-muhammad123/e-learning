@@ -2,6 +2,7 @@ import 'package:e_learning_app/pages/lessons.dart';
 import 'package:flutter/material.dart';
 import 'package:e_learning_app/data/category_data.dart';
 import 'package:e_learning_app/data/constants.dart';
+import 'package:intl/intl.dart';
 
 class CategoryTile extends StatelessWidget {
   final Category category;
@@ -67,7 +68,9 @@ class CategoryTile extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      "Added on ${category.addedAt!}",
+                      "Added on ${DateFormat.yMd().format(
+                            DateTime.parse(category.addedAt ?? ""),
+                          ).toString()}",
                       style: TextStyle(
                         color: textColor.withOpacity(
                           0.4,

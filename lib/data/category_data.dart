@@ -6,7 +6,7 @@ class Category {
 
   Category({this.title, this.description, this.addedAt, this.image});
 
-  Category.fromJson(Map<String, dynamic> json) {
+  Category.fromJson(Map json) {
     title = json["title"];
     description = json["description"];
     addedAt = json["added_at"];
