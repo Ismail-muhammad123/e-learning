@@ -3,7 +3,7 @@ class Level {
 
   Level({this.name});
 
-  Level.fromJson(Map<String, dynamic> json) {
+  Level.fromJson(Map json) {
     name = json["name"];
   }
 

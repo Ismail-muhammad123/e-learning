@@ -17,10 +17,25 @@ class _CategoriesState extends State<Categories> {
   final TextEditingController _searchController = TextEditingController();
   String _searchText = "";
 
+  Future<List<Category>?> getCategories() async {
+    List<Category>? categories =
+        await context.read<LessonProvider>().categories();
+    if (categories == null) _showSnackBar();
+    return categories;
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  _showSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('You are offline!'),
+      ),
+    );
   }
 
   @override
@@ -84,23 +99,37 @@ class _CategoriesState extends State<Categories> {
           ),
           Flexible(
             child: FutureBuilder<List<Category?>?>(
-                future: context.read<LessonProvider>().categories(),
+                future: getCategories(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Container(
                       width: double.maxFinite,
                       height: double.maxFinite,
                       alignment: Alignment.center,
-                      child: CircularProgressIndicator(),
+                      child: const CircularProgressIndicator(),
                     );
                   }
 
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return Container(
                       width: double.maxFinite,
-                      height: double.maxFinite,
+                      height: MediaQuery.of(context).size.height * 0.6,
                       alignment: Alignment.center,
-                      child: Text("No Categories found"),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("No Categories found"),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: MaterialButton(
+                              onPressed: () => setState(() {}),
+                              color: primaryColor,
+                              minWidth: 200.0,
+                              child: const Text("Retry"),
+                            ),
+                          )
+                        ],
+                      ),
                     );
                   }
                   return SingleChildScrollView(

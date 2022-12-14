@@ -1,6 +1,6 @@
-import 'package:e_learning_app/data/category_data.dart';
 import 'package:e_learning_app/data/constants.dart';
 import 'package:e_learning_app/data/lesson_data.dart';
+import 'package:e_learning_app/data/level_data.dart';
 import 'package:e_learning_app/providers/lesson_provider.dart';
 import 'package:e_learning_app/widgets/lesson_tile.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,44 @@ class Lessons extends StatefulWidget {
 class _LessonsState extends State<Lessons> {
   final TextEditingController _searchController = TextEditingController();
   String _searchText = "";
-  String _className = "";
+  String _className = "All";
+
+  List<String> classes = [
+    "All",
+  ];
+
+  Future<List<Lesson>?> getLessons() async {
+    List<Lesson>? lessons = await context.read<LessonProvider>().lessons();
+    if (lessons == null) _showSnackBar();
+    return lessons;
+  }
+
+  Future<List<String>?> getLevels() async {
+    List<Level>? levels = await context.read<LessonProvider>().levels();
+    if (levels == null) {
+      _showSnackBar();
+      return [];
+    }
+    return levels.map((e) => e.name!).toList();
+  }
+
+  _showSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('You are offline!'),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    getLevels().then(
+      (value) => setState(() {
+        classes = classes + value!;
+      }),
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,28 +71,28 @@ class _LessonsState extends State<Lessons> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
-            child: DropdownButton<String>(
-              value: _className,
-              icon: const Icon(
-                Icons.sort,
-                color: backgroundColor,
-              ),
-              items: const [
-                DropdownMenuItem(
-                  value: "",
-                  child: Text("All"),
-                ),
-                DropdownMenuItem(
-                  value: "JSS One",
-                  child: Text("JSS One"),
-                ),
-              ],
-              onChanged: (value) => setState(
-                () {
-                  _className = value!;
-                },
-              ),
-            ),
+            child: classes.isEmpty
+                ? Container()
+                : DropdownButton<String>(
+                    value: _className,
+                    icon: const Icon(
+                      Icons.sort,
+                      color: backgroundColor,
+                    ),
+                    items: classes
+                        .map(
+                          (e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) => setState(
+                      () {
+                        _className = value!;
+                      },
+                    ),
+                  ),
           ),
         ],
       ),
@@ -114,46 +151,66 @@ class _LessonsState extends State<Lessons> {
           Flexible(
             child: SingleChildScrollView(
               child: FutureBuilder<List<Lesson>?>(
-                  future: context.read<LessonProvider>().lessons(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Container(
-                        width: double.maxFinite,
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        child: Text("No Lesson found"),
-                      );
-                    }
-                    return Column(
-                      children: snapshot.data!
-                          .where(
-                            (element) => widget.category != null
-                                ? element.category == widget.category!
-                                : true,
-                          )
-                          .where(
-                            (element) => element.level != null
-                                ? element.level!
-                                    .toLowerCase()
-                                    .contains(_className)
-                                : true,
-                          )
-                          .where(
-                            (element) => element.title!
-                                .toLowerCase()
-                                .contains(_searchText),
-                          )
-                          .map(
-                            (e) => LessonTile(lesson: e),
-                          )
-                          .toList(),
+                future: getLessons(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(
+                      width: double.maxFinite,
+                      height: 220.0,
+                      alignment: Alignment.center,
+                      child: const CircularProgressIndicator(),
                     );
-                  }),
+                  }
+                  if (!snapshot.hasData) {
+                    return Container(
+                      width: double.maxFinite,
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("No Lesson found"),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: MaterialButton(
+                              onPressed: () => setState(() {}),
+                              color: primaryColor,
+                              minWidth: 200.0,
+                              child: const Text("Retry"),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                  return Column(
+                    children: snapshot.data!
+                        .where(
+                          (element) => widget.category != null
+                              ? element.category == widget.category!
+                              : true,
+                        )
+                        .where(
+                          (element) => _className.toLowerCase() == "all"
+                              ? true
+                              : element.level != null
+                                  ? element.level!.toLowerCase().contains(
+                                        _className.toLowerCase(),
+                                      )
+                                  : false,
+                        )
+                        .where(
+                          (element) => element.title!
+                              .toLowerCase()
+                              .contains(_searchText),
+                        )
+                        .map(
+                          (e) => LessonTile(lesson: e),
+                        )
+                        .toList(),
+                  );
+                },
+              ),
             ),
           )
         ],

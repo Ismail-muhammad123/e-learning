@@ -1,4 +1,5 @@
 import 'package:e_learning_app/data/constants.dart';
+import 'package:e_learning_app/pages/about.dart';
 import 'package:e_learning_app/pages/cateories.dart';
 import 'package:e_learning_app/pages/explore.dart';
 import 'package:e_learning_app/pages/lessons.dart';
