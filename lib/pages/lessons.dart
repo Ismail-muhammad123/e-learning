@@ -123,7 +123,9 @@ class _LessonsState extends State<Lessons> {
                     }
 
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(
+                      return Container(
+                        width: double.maxFinite,
+                        height: MediaQuery.of(context).size.height * 0.7,
                         child: Text("No Lesson found"),
                       );
                     }

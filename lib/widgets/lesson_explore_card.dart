@@ -1,8 +1,7 @@
-import 'package:chewie/chewie.dart';
 import 'package:e_learning_app/data/constants.dart';
 import 'package:e_learning_app/data/lesson_data.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:intl/intl.dart';
 
 class LessonCard extends StatefulWidget {
   final Lesson lesson;
@@ -16,23 +15,6 @@ class LessonCard extends StatefulWidget {
 }
 
 class _LessonCardState extends State<LessonCard> {
-  // late VideoPlayerController videoPlayerController;
-  // late ChewieController chewieController;
-
-  // @override
-  // void initState() {
-  //   videoPlayerController = VideoPlayerController.network(widget.lesson.video!);
-  //   chewieController = ChewieController(
-  //     videoPlayerController: videoPlayerController,
-  //     looping: true,
-  //     aspectRatio: 6 / 5,
-  //     showControls: true,
-  //     showOptions: false,
-  //     autoInitialize: true,
-  //   );
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -42,7 +24,6 @@ class _LessonCardState extends State<LessonCard> {
         width: 300,
         decoration: BoxDecoration(
           color: backgroundColor,
-          // borderRadius: BorderRadius.circular(15.0),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.4),
@@ -54,11 +35,36 @@ class _LessonCardState extends State<LessonCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              widget.lesson.thumbnail!,
-              width: 300,
-              height: 180,
-              fit: BoxFit.fitHeight,
+            Stack(
+              children: [
+                Image.network(
+                  widget.lesson.thumbnail!,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 300,
+                    height: 180,
+                    color: primaryColor.withOpacity(0.4),
+                  ),
+                  width: 300,
+                  height: 180,
+                  fit: BoxFit.fitHeight,
+                ),
+                Container(
+                  height: 180,
+                  width: 300,
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                        color: backgroundColor,
+                        borderRadius: BorderRadius.circular(25)),
+                    child: const Icon(
+                      Icons.play_arrow,
+                      size: 40,
+                    ),
+                  ),
+                )
+              ],
             ),
             Flexible(
               child: Padding(
@@ -77,7 +83,9 @@ class _LessonCardState extends State<LessonCard> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    Text("Added on: ${widget.lesson.addedAt}"),
+                    Text("Added on: ${DateFormat.yMd().format(
+                          DateTime.parse(widget.lesson.addedAt ?? ""),
+                        ).toString()}"),
                   ],
                 ),
               ),

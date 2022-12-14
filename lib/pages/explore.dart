@@ -17,9 +17,7 @@ class Explore extends StatefulWidget {
 }
 
 class _ExploreState extends State<Explore> {
-  final TextEditingController _searchController = TextEditingController();
-
-    Future<List<Category>> getCategories() async {
+  Future<List<Category>> getCategories() async {
     List<Category>? categories =
         await context.read<LessonProvider>().categories();
     return categories!
@@ -28,59 +26,22 @@ class _ExploreState extends State<Explore> {
 
   Future<List<Lesson>> getLessons() async {
     List<Lesson>? lessons = await context.read<LessonProvider>().lessons();
-    return lessons!.sublist(0, categories.length >= 6 ? 5 : categories.length);
+    return lessons!.sublist(0, lessons.length >= 6 ? 5 : lessons.length);
   }
 
+  late SnackBar snackBar;
 
   @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
+  void initState() {
+    snackBar = SnackBar(
+      content: const Text('You are offline!'),
+      action: SnackBarAction(
+        label: 'Retry',
+        onPressed: () => setState(() {}),
+      ),
+    );
+    super.initState();
   }
-
-  List<Category> categories = [
-    Category(
-      title: "Web dev",
-      description: "Web development",
-      image: "assets/images/image1.jpg",
-      addedAt: "12/12/2022",
-    ),
-    Category(
-      title: "Mobile dev",
-      description: "Web development",
-      image: "assets/images/image1.jpg",
-      addedAt: "12/12/2022",
-    ),
-    Category(
-      title: "Web3 dev",
-      description: "Web development",
-      image: "assets/images/image1.jpg",
-      addedAt: "12/12/2022",
-    ),
-  ];
-
-  List<Lesson> lessons = [
-    Lesson(
-      title: "Introduction to Calculus",
-      note: "this is an introduction to calculus",
-      thumbnail:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/0a759f8138be06b43a447b00c8a6e392.jpg",
-      video:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/DJ%20Snake,%20Lauv%20-%20A%20Different%20Way%20(Official%20Video).mp4",
-      category: "Mathematics",
-      addedAt: "12/12/2020",
-    ),
-    Lesson(
-      title: "Introduction Mobile App development",
-      note: "this is an introduction to calculus",
-      thumbnail:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/8EQSIREC-large-removebg-preview.png",
-      video:
-          "https://e-learning-demo-app.fra1.digitaloceanspaces.com/e-learning-demo-app/media/DJ%20Snake,%20Lauv%20-%20A%20Different%20Way%20(Official%20Video).mp4",
-      category: "Mathematics",
-      addedAt: "12/12/2020",
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -88,47 +49,17 @@ class _ExploreState extends State<Explore> {
       children: [
         Container(
           color: primaryColor,
-          height: 250,
+          height: 200,
           width: double.maxFinite,
           padding: const EdgeInsets.all(20.0),
-          child: SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  "Find Your Favourite Courses",
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: backgroundColor,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Container(
-                    height: 60,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      color: backgroundColor,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: const TextField(
-                      textAlignVertical: TextAlignVertical(y: 0),
-                      style: TextStyle(
-                        fontSize: 18.0,
-                      ),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 14.0,
-                        ),
-                        prefixIcon: Icon(Icons.search),
-                      ),
-                    ),
-                  ),
-                )
-              ],
+          alignment: Alignment.centerLeft,
+          child: const SafeArea(
+            child: Text(
+              "Find Your Favourite Courses",
+              style: TextStyle(
+                fontSize: 30,
+                color: backgroundColor,
+              ),
             ),
           ),
         ),
@@ -136,7 +67,7 @@ class _ExploreState extends State<Explore> {
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 12.0,
+                vertical: 16.0,
                 horizontal: 14.0,
               ),
               child: Column(
@@ -171,17 +102,41 @@ class _ExploreState extends State<Explore> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 14.0),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: categories
-                            .map(
-                              (e) => CategoryCard(category: e),
-                            )
-                            .toList(),
-                      ),
-                    ),
+                    child: FutureBuilder<List<Category?>?>(
+                        future: getCategories(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Container(
+                              width: double.maxFinite,
+                              height: 220.0,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                            return Container(
+                              width: double.maxFinite,
+                              height: 220.0,
+                              alignment: Alignment.center,
+                              child: const Text("No Lessons Found"),
+                            );
+                          }
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: snapshot.data!
+                                  .map(
+                                    (e) => CategoryCard(category: e!),
+                                  )
+                                  .toList(),
+                            ),
+                          );
+                        }),
                   ),
                   const SizedBox(height: 12.0),
                   Row(
@@ -212,17 +167,41 @@ class _ExploreState extends State<Explore> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 14.0),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: lessons
-                            .map(
-                              (e) => LessonCard(lesson: e),
-                            )
-                            .toList(),
-                      ),
-                    ),
+                    child: FutureBuilder<List<Lesson?>?>(
+                        future: context.read<LessonProvider>().lessons(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Container(
+                              width: double.maxFinite,
+                              height: 220.0,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                            return Container(
+                              width: double.maxFinite,
+                              height: 220.0,
+                              alignment: Alignment.center,
+                              child: const Text("No Lessons Found"),
+                            );
+                          }
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: snapshot.data!
+                                  .map(
+                                    (e) => LessonCard(lesson: e!),
+                                  )
+                                  .toList(),
+                            ),
+                          );
+                        }),
                   ),
                 ],
               ),
