@@ -1,32 +1,34 @@
-import 'package:e_learning_app/data/category_data.dart';
 import 'package:e_learning_app/data/constants.dart';
 import 'package:e_learning_app/pages/lessons.dart';
 import 'package:flutter/material.dart';
 
-class CategoryCard extends StatelessWidget {
-  final Category category;
-  const CategoryCard({
-    Key? key,
-    required this.category,
-  }) : super(key: key);
+class TopicCard extends StatefulWidget {
+  final String topic;
+  const TopicCard({super.key, required this.topic});
 
+  @override
+  State<TopicCard> createState() => _TopicCardState();
+}
+
+class _TopicCardState extends State<TopicCard> {
+  @override
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => Lessons(
-            category: category.title,
+            topic: widget.topic,
           ),
         ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          height: 50,
-          width: 200,
+          height: 60,
+          padding: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(10),
             color: backgroundColor,
             boxShadow: [
               BoxShadow(
@@ -38,7 +40,7 @@ class CategoryCard extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              category.title ?? "",
+              widget.topic,
               style: const TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.w700,

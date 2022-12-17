@@ -47,4 +47,18 @@ class LessonProvider extends ChangeNotifier {
       return null;
     }
   }
+
+  Future<List<String>?>? getTopics() async {
+    var url = Uri.https(apiBaseUrl, topicsPath);
+
+    try {
+      var res = await http.get(url);
+
+      var jsonResponse = json.decode(res.body) as List;
+
+      return jsonResponse.map((e) => e['name'] as String).toList();
+    } catch (e) {
+      return null;
+    }
+  }
 }

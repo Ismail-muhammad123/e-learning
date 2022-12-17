@@ -39,48 +39,35 @@ class CategoryTile extends StatelessWidget {
           ),
           height: 100,
           width: double.maxFinite,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Image.network(
-                category.image!,
-                height: 100,
-                width: MediaQuery.of(context).size.width * 0.4,
-                fit: BoxFit.fitHeight,
-              ),
-              Flexible(
-                  child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      category.title!,
-                      style: const TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      category.description!,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      "Added on ${DateFormat.yMd().format(
-                            DateTime.parse(category.addedAt ?? ""),
-                          ).toString()}",
-                      style: TextStyle(
-                        color: textColor.withOpacity(
-                          0.4,
-                        ),
-                      ),
-                    ),
-                  ],
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  category.title!,
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ))
-            ],
+                Text(
+                  "Description: ${category.description!}",
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  "Added on: ${DateFormat.yMd().format(
+                        DateTime.parse(category.addedAt ?? ""),
+                      ).toString()}",
+                  style: TextStyle(
+                    color: textColor.withOpacity(
+                      0.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

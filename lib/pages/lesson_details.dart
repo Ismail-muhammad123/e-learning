@@ -89,6 +89,14 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
                         thickness: 3.0,
                       ),
                       Text(
+                        "Note:",
+                        style: TextStyle(
+                          color: primaryColor.withOpacity(0.7),
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
                         widget.lesson.note ?? "",
                         style: const TextStyle(
                           fontSize: 18.0,
@@ -105,6 +113,16 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
                         ),
                       ),
                       Text(widget.lesson.category ?? ""),
+                      const Divider(),
+                      Text(
+                        "Topic:",
+                        style: TextStyle(
+                          color: primaryColor.withOpacity(0.7),
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(widget.lesson.topic ?? ""),
                       const Divider(),
                       Text(
                         "Tutor:",

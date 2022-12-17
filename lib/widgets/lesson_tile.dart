@@ -81,11 +81,20 @@ class LessonTile extends StatelessWidget {
                           fontWeight: FontWeight.w900,
                         ),
                       ),
-                      Text(
-                        lesson.note!,
-                        style: TextStyle(
-                          color: textColor.withOpacity(0.6),
-                        ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 80.0,
+                            child: Text(
+                              "Note:",
+                              style: TextStyle(
+                                color: primaryColor.withOpacity(0.8),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Text(lesson.note ?? ""),
+                        ],
                       ),
                       Row(
                         children: [
@@ -115,6 +124,21 @@ class LessonTile extends StatelessWidget {
                             ),
                           ),
                           Text(lesson.category ?? "")
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 80,
+                            child: Text(
+                              "Topic:",
+                              style: TextStyle(
+                                color: primaryColor.withOpacity(0.8),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Text(lesson.topic ?? "")
                         ],
                       ),
                       Row(

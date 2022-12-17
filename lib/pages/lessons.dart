@@ -3,12 +3,18 @@ import 'package:e_learning_app/data/lesson_data.dart';
 import 'package:e_learning_app/data/level_data.dart';
 import 'package:e_learning_app/providers/lesson_provider.dart';
 import 'package:e_learning_app/widgets/lesson_tile.dart';
+import 'package:e_learning_app/widgets/topic_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Lessons extends StatefulWidget {
   final String? category;
-  const Lessons({super.key, this.category});
+  final String? topic;
+  const Lessons({
+    super.key,
+    this.category,
+    this.topic = "All",
+  });
 
   @override
   State<Lessons> createState() => _LessonsState();
@@ -17,10 +23,10 @@ class Lessons extends StatefulWidget {
 class _LessonsState extends State<Lessons> {
   final TextEditingController _searchController = TextEditingController();
   String _searchText = "";
-  String _className = "All";
+  String _className = "All Classes";
 
   List<String> classes = [
-    "All",
+    "All Classes",
   ];
 
   Future<List<Lesson>?> getLessons() async {
@@ -36,6 +42,15 @@ class _LessonsState extends State<Lessons> {
       return [];
     }
     return levels.map((e) => e.name!).toList();
+  }
+
+  Future<List<String>?> getTopics() async {
+    List<String>? topics = await context.read<LessonProvider>().getTopics();
+    if (topics == null) {
+      _showSnackBar();
+      return [];
+    }
+    return topics;
   }
 
   _showSnackBar() {
@@ -97,24 +112,26 @@ class _LessonsState extends State<Lessons> {
         ],
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             color: primaryColor,
-            height: widget.category == null ? 130 : 150,
             width: double.maxFinite,
             child: SafeArea(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    widget.category ?? "",
-                    style: const TextStyle(
-                      fontSize: 28.0,
-                      fontWeight: FontWeight.w600,
-                      color: backgroundColor,
-                    ),
-                  ),
+                  widget.category != null
+                      ? Text(
+                          widget.category ?? "",
+                          style: const TextStyle(
+                            fontSize: 28.0,
+                            fontWeight: FontWeight.w600,
+                            color: backgroundColor,
+                          ),
+                        )
+                      : Container(),
                   Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Container(
@@ -135,6 +152,7 @@ class _LessonsState extends State<Lessons> {
                           fontSize: 18.0,
                         ),
                         decoration: const InputDecoration(
+                          hintText: "Search Lesson Title",
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 14.0,
@@ -147,6 +165,75 @@ class _LessonsState extends State<Lessons> {
                 ],
               ),
             ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              "Topics",
+              style: TextStyle(
+                fontSize: 20.0,
+                color: primaryColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          FutureBuilder<List<String?>?>(
+            future: getTopics(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(
+                  width: double.maxFinite,
+                  height: 100.0,
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(),
+                );
+              }
+              if (!snapshot.hasData) {
+                return Container(
+                  width: double.maxFinite,
+                  height: 220.0,
+                  alignment: Alignment.center,
+                  color: primaryColor.withOpacity(0.4),
+                  child: const Text("No Topics Found"),
+                );
+              }
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: widget.topic != null &&
+                                widget.topic!.toLowerCase() == "all"
+                            ? primaryColor.withOpacity(0.4)
+                            : null,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const TopicCard(topic: "All"),
+                    ),
+                    ...snapshot.data!
+                        .map(
+                          (e) => Container(
+                            decoration: BoxDecoration(
+                              color: widget.topic != null &&
+                                      widget.topic!.toLowerCase() ==
+                                          e!.toLowerCase()
+                                  ? primaryColor.withOpacity(0.4)
+                                  : null,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: TopicCard(topic: e!),
+                          ),
+                        )
+                        .toList(),
+                  ],
+                ),
+              );
+            },
+          ),
+          Divider(
+            color: primaryColor,
           ),
           Flexible(
             child: SingleChildScrollView(
@@ -191,7 +278,16 @@ class _LessonsState extends State<Lessons> {
                               : true,
                         )
                         .where(
-                          (element) => _className.toLowerCase() == "all"
+                          (element) => widget.topic!.toLowerCase() == "all" &&
+                                  widget.topic != null
+                              ? true
+                              : element.topic != null
+                                  ? element.topic!.toLowerCase() ==
+                                      widget.topic!.toLowerCase()
+                                  : false,
+                        )
+                        .where(
+                          (element) => _className.toLowerCase() == "all classes"
                               ? true
                               : element.level != null
                                   ? element.level!.toLowerCase().contains(

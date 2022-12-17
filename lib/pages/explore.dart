@@ -7,6 +7,7 @@ import 'package:e_learning_app/pages/lessons.dart';
 import 'package:e_learning_app/providers/lesson_provider.dart';
 import 'package:e_learning_app/widgets/category_card.dart';
 import 'package:e_learning_app/widgets/lesson_explore_card.dart';
+import 'package:e_learning_app/widgets/topic_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,6 +33,12 @@ class _ExploreState extends State<Explore> {
     return lessons?.sublist(0, lessons.length >= 6 ? 5 : lessons.length);
   }
 
+  Future<List<String>?> getTopics() async {
+    List<String>? topics = await context.read<LessonProvider>().getTopics();
+    if (topics == null) _showSnackBar();
+    return topics;
+  }
+
   _showSnackBar() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -44,7 +51,7 @@ class _ExploreState extends State<Explore> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pi Tutorials"),
+        title: const Text("Math Lesson"),
         actions: [
           IconButton(
             color: backgroundColor,
@@ -96,6 +103,7 @@ class _ExploreState extends State<Explore> {
                           "Explore Categories",
                           style: TextStyle(
                             fontSize: 20.0,
+                            color: primaryColor,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -152,6 +160,51 @@ class _ExploreState extends State<Explore> {
                         },
                       ),
                     ),
+                    const Text(
+                      "Topics",
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 14.0),
+                      child: FutureBuilder<List<String?>?>(
+                        future: getTopics(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Container(
+                              width: double.maxFinite,
+                              height: 100.0,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(),
+                            );
+                          }
+                          if (!snapshot.hasData) {
+                            return Container(
+                              width: double.maxFinite,
+                              height: 220.0,
+                              alignment: Alignment.center,
+                              color: primaryColor.withOpacity(0.4),
+                              child: const Text("No Categories Found"),
+                            );
+                          }
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: snapshot.data!
+                                  .map(
+                                    (e) => TopicCard(topic: e!),
+                                  )
+                                  .toList(),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                     const SizedBox(height: 12.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -160,6 +213,7 @@ class _ExploreState extends State<Explore> {
                           "Popular Lessons",
                           style: TextStyle(
                             fontSize: 20.0,
+                            color: primaryColor,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -182,38 +236,39 @@ class _ExploreState extends State<Explore> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 14.0),
                       child: FutureBuilder<List<Lesson?>?>(
-                          future: getLessons(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Container(
-                                width: double.maxFinite,
-                                height: 220.0,
-                                alignment: Alignment.center,
-                                child: const CircularProgressIndicator(),
-                              );
-                            }
-                            if (!snapshot.hasData) {
-                              return Container(
-                                width: double.maxFinite,
-                                height: 220.0,
-                                alignment: Alignment.center,
-                                color: primaryColor.withOpacity(0.4),
-                                child: const Text("No Lessons Found"),
-                              );
-                            }
-                            return SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: snapshot.data!
-                                    .map(
-                                      (e) => LessonCard(lesson: e!),
-                                    )
-                                    .toList(),
-                              ),
+                        future: getLessons(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Container(
+                              width: double.maxFinite,
+                              height: 220.0,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(),
                             );
-                          }),
+                          }
+                          if (!snapshot.hasData) {
+                            return Container(
+                              width: double.maxFinite,
+                              height: 220.0,
+                              alignment: Alignment.center,
+                              color: primaryColor.withOpacity(0.4),
+                              child: const Text("No Lessons Found"),
+                            );
+                          }
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: snapshot.data!
+                                  .map(
+                                    (e) => LessonCard(lesson: e!),
+                                  )
+                                  .toList(),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
