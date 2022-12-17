@@ -38,8 +38,8 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Padding(
+            children: const [
+               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(
                   "Welcome to",
@@ -49,16 +49,17 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
               ),
-              Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    "E-learning App",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      color: backgroundColor,
-                    ),
-                  ))
+               Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Text(
+                  "Math Lesson`",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: backgroundColor,
+                  ),
+                ),
+              )
             ],
           ),
         ),

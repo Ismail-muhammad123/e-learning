@@ -10,4 +10,4 @@ const primaryColor = Colors.blue;
 Color? secondaryColor = Colors.grey;
 const textColor = Colors.black;
 
-const apiBaseUrl = "e-learning-demo-app.herokuapp.com";
+const apiBaseUrl = "math-lessons-app.herokuapp.com/";
