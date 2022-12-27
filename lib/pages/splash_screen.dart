@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
                Padding(
                 padding: EdgeInsets.all(12.0),
                 child: Text(
-                  "Math Lesson`",
+                  "Math Lessons",
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,

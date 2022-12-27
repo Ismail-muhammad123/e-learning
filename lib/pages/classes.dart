@@ -1,39 +1,21 @@
+import 'package:e_learning_app/data/category_data.dart';
 import 'package:e_learning_app/data/constants.dart';
-import 'package:e_learning_app/pages/lesson_details.dart';
-import 'package:e_learning_app/providers/lesson_provider.dart';
+import 'package:e_learning_app/pages/topics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/lesson_provider.dart';
 
-class Lessons extends StatefulWidget {
-  final String? category, topic, level;
-  const Lessons({
-    super.key,
-    required this.category,
-    required this.topic,
-    required this.level,
-  });
-
-  @override
-  State<Lessons> createState() => _LessonsState();
-}
-
-class _LessonsState extends State<Lessons> {
-  // _showSnackBar() {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     const SnackBar(
-  //       content: Text('You are offline!'),
-  //     ),
-  //   );
-  // }
+class ClassesPage extends StatelessWidget {
+  final Category category;
+  const ClassesPage({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Select Lesson".toUpperCase()),
+        title: Text("Select Class".toUpperCase()),
         centerTitle: true,
-        elevation: 0,
       ),
       body: Column(
         children: [
@@ -41,18 +23,18 @@ class _LessonsState extends State<Lessons> {
             alignment: Alignment.center,
             height: 70.0,
             width: double.maxFinite,
-            color: primaryColor,
+            color: primaryColor.withOpacity(0.5),
             child: Text(
-              "${widget.category} > ${widget.level} > ${widget.topic} > lessons",
+              "${category.title} > classes",
               style: const TextStyle(
-                fontSize: 16.0,
+                fontSize: 18.0,
                 color: backgroundColor,
               ),
             ),
           ),
           Flexible(
             child: FutureBuilder(
-              future: context.read<LessonProvider>().lessons(),
+              future: context.read<LessonProvider>().levels(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -61,17 +43,16 @@ class _LessonsState extends State<Lessons> {
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                    child: Text("Topics not found"),
+                    child: Text("Classes not found"),
                   );
                 }
 
                 return ListView(
                   children: [
                     ...snapshot.data!
-                        .where((element) =>
-                            element.level == widget.level &&
-                            element.category == widget.category &&
-                            element.topic == widget.topic)
+                        .where(
+                          (element) => element.category == category.id,
+                        )
                         .map(
                           (e) => Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -79,8 +60,10 @@ class _LessonsState extends State<Lessons> {
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        LessonDetailsPage(lesson: e),
+                                    builder: (context) => TopicsPage(
+                                      category: category,
+                                      level: e,
+                                    ),
                                   ),
                                 );
                               },
@@ -101,7 +84,7 @@ class _LessonsState extends State<Lessons> {
                                   ],
                                 ),
                                 child: Text(
-                                  e.title!,
+                                  e.name ?? "",
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 20.0,

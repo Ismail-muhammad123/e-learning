@@ -1,21 +1,21 @@
-class Level {
+class Topic {
   int? id;
   String? name;
-  int? category;
+  int? level;
 
-  Level({this.name});
+  Topic({this.id, this.name, this.level});
 
-  Level.fromJson(Map json) {
+  Topic.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     name = json["name"];
-    category = json["category"];
+    level = json["level"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data["id"] = id;
     data["name"] = name;
-    data["category"] = category;
+    data["level"] = level;
     return data;
   }
 }
