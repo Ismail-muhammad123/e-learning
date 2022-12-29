@@ -76,7 +76,7 @@ class TopicsPage extends StatelessWidget {
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                height: 60.0,
+                                height: 150.0,
                                 decoration: BoxDecoration(
                                   color: backgroundColor,
                                   borderRadius: BorderRadius.circular(10.0),
@@ -90,12 +90,36 @@ class TopicsPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                child: Text(
-                                  e.name!,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 20.0,
-                                  ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Image.network(
+                                      e.thumbnail!,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Container(
+                                        height: 150,
+                                        width: 150,
+                                        color: primaryColor.withOpacity(0.3),
+                                        child: Center(
+                                          child: Icon(Icons.book),
+                                        ),
+                                      ),
+                                      height: 150,
+                                      width: 150,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        e.name!,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 20.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),

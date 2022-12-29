@@ -47,7 +47,11 @@ class ClassesPage extends StatelessWidget {
                   );
                 }
 
-                return ListView(
+                return GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 6.0,
+                  mainAxisSpacing: 6.0,
+                  padding: EdgeInsets.all(10.0),
                   children: [
                     ...snapshot.data!
                         .where(
@@ -75,8 +79,8 @@ class ClassesPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10.0),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.grey.withOpacity(
-                                        0.4,
+                                      color: Colors.blue.withOpacity(
+                                        0.2,
                                       ),
                                       blurRadius: 12.0,
                                       offset: const Offset(4, 4),

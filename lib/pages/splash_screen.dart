@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: const [
-               Padding(
+              Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(
                   "Welcome to",
@@ -49,10 +49,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
               ),
-               Padding(
+              Padding(
                 padding: EdgeInsets.all(12.0),
                 child: Text(
-                  "Math Lessons",
+                  "Maths Lessons",
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,

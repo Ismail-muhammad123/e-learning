@@ -2,6 +2,7 @@ class Topic {
   int? id;
   String? name;
   int? level;
+  String? thumbnail;
 
   Topic({this.id, this.name, this.level});
 
@@ -9,6 +10,7 @@ class Topic {
     id = json["id"];
     name = json["name"];
     level = json["level"];
+    thumbnail = json["thumbnail_url"];
   }
 
   Map<String, dynamic> toJson() {
@@ -16,6 +18,7 @@ class Topic {
     data["id"] = id;
     data["name"] = name;
     data["level"] = level;
+    data["thumbnail_url"] = thumbnail;
     return data;
   }
 }
