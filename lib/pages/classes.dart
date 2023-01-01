@@ -48,10 +48,13 @@ class ClassesPage extends StatelessWidget {
                 }
 
                 return GridView.count(
-                  crossAxisCount: 2,
+                  crossAxisCount:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? 2
+                          : 3,
                   crossAxisSpacing: 6.0,
                   mainAxisSpacing: 6.0,
-                  padding: EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10.0),
                   children: [
                     ...snapshot.data!
                         .where(

@@ -60,6 +60,15 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
         title: Text(widget.lesson.title!),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          Padding(
+            padding: EdgeInsets.all(12.0),
+            child: IconButton(
+              onPressed: () => _chewieController.enterFullScreen(),
+              icon: Icon(Icons.fullscreen),
+            ),
+          ),
+        ],
       ),
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -70,8 +79,12 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
             children: [
               SizedBox(
                 width: double.maxFinite,
-                height: MediaQuery.of(context).size.width /
-                    _chewieController.aspectRatio!,
+                height:
+                    MediaQuery.of(context).orientation == Orientation.portrait
+                        ? MediaQuery.of(context).size.width /
+                            _chewieController.aspectRatio!
+                        : MediaQuery.of(context).size.height /
+                            _chewieController.aspectRatio!,
                 child: Chewie(
                   controller: _chewieController,
                 ),

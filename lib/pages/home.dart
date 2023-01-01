@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Container(
             width: double.maxFinite,
-            height: 100.0,
+            height: 80.0,
             color: primaryColor,
             alignment: Alignment.center,
             child: Text(
@@ -88,10 +88,16 @@ class _HomePageState extends State<HomePage> {
                 }
 
                 return GridView.count(
-                  crossAxisCount: 2,
+                  crossAxisCount:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? 2
+                          : 3,
                   crossAxisSpacing: 6.0,
                   mainAxisSpacing: 6.0,
-                  childAspectRatio: .8,
+                  childAspectRatio:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? .8
+                          : 1.4,
                   padding: const EdgeInsets.all(10.0),
                   children: [
                     ...snapshot.data!.map(
