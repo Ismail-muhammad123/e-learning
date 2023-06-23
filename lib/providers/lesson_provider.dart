@@ -37,11 +37,9 @@ class LessonProvider extends ChangeNotifier {
   }
 
   Future<List<Level>?>? levels() async {
-    var url = Uri.https(apiBaseUrl, levelsPath);
-
+    var url = Uri.http(apiBaseUrl, levelsPath);
     try {
       var res = await http.get(url);
-
       var jsonResponse = json.decode(res.body) as List;
 
       return jsonResponse.map((e) => Level.fromJson(e)).toList();
@@ -51,16 +49,16 @@ class LessonProvider extends ChangeNotifier {
   }
 
   Future<List<Topic>> getTopics() async {
-    var url = Uri.https(apiBaseUrl, topicsPath);
+    var url = Uri.http(apiBaseUrl, topicsPath);
 
     try {
       var res = await http.get(url);
+      print(res.body);
 
       List<Topic> jsonResponse = List<Topic>.from(
         json.decode(res.body).map((e) => Topic.fromJson(e)),
       );
       return jsonResponse;
-
     } catch (e) {
       return [];
     }

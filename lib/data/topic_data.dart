@@ -1,24 +1,21 @@
 class Topic {
   int? id;
   String? name;
-  int? level;
-  String? thumbnail;
+  int? sub_category;
 
-  Topic({this.id, this.name, this.level});
+  Topic({this.id, this.name, this.sub_category});
 
   Topic.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     name = json["name"];
-    level = json["level"];
-    thumbnail = json["thumbnail_url"];
+    sub_category = json["sub_category"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data["id"] = id;
     data["name"] = name;
-    data["level"] = level;
-    data["thumbnail_url"] = thumbnail;
+    data["sub_category"] = sub_category;
     return data;
   }
 }

@@ -8,8 +8,8 @@ import '../data/constants.dart';
 import '../providers/lesson_provider.dart';
 
 class TopicsPage extends StatelessWidget {
-  final Category category;
-  final Level level;
+  final Category? category;
+  final Level? level;
   const TopicsPage({
     super.key,
     required this.category,
@@ -33,7 +33,7 @@ class TopicsPage extends StatelessWidget {
             width: double.maxFinite,
             color: primaryColor,
             child: Text(
-              "${category.title} > ${level.name} > topics",
+              "${category != null ? category!.title : ''} > ${level != null ? level!.name : ''} > topics",
               style: const TextStyle(
                 fontSize: 16.0,
                 color: backgroundColor,
@@ -58,68 +58,33 @@ class TopicsPage extends StatelessWidget {
                 return ListView(
                   children: [
                     ...snapshot.data!
-                        .where((element) => element.level == level.id)
+                        .where((element) => level != null
+                            ? element.sub_category == level!.id
+                            : true)
                         .map(
                           (e) => Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => Lessons(
-                                      category: category.title,
-                                      topic: e.name,
-                                      level: level.name,
+                            child: Card(
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => Lessons(
+                                        category: category!,
+                                        topic: e,
+                                        level: level,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                title: Padding(
+                                  padding: const EdgeInsets.all(14.0),
+                                  child: Text(
+                                    e.name!,
+                                    style: const TextStyle(
+                                      fontSize: 18.0,
                                     ),
                                   ),
-                                );
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 150.0,
-                                decoration: BoxDecoration(
-                                  color: backgroundColor,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(
-                                        0.4,
-                                      ),
-                                      blurRadius: 12.0,
-                                      offset: const Offset(4, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Image.network(
-                                      e.thumbnail!,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              Container(
-                                        height: 150,
-                                        width: 150,
-                                        color: primaryColor.withOpacity(0.3),
-                                        child: Center(
-                                          child: Icon(Icons.book),
-                                        ),
-                                      ),
-                                      height: 150,
-                                      width: 150,
-                                      fit: BoxFit.contain,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        e.name!,
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          fontSize: 20.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ),
                             ),

@@ -6,15 +6,15 @@ import 'package:provider/provider.dart';
 import '../providers/lesson_provider.dart';
 
 class ClassesPage extends StatelessWidget {
-  final Category category;
-  const ClassesPage({super.key, required this.category});
+  final Category? category;
+  const ClassesPage({super.key, this.category});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Select Class".toUpperCase()),
+        title: Text("Select Sub Category".toUpperCase()),
         centerTitle: true,
       ),
       body: Column(
@@ -25,7 +25,7 @@ class ClassesPage extends StatelessWidget {
             width: double.maxFinite,
             color: primaryColor.withOpacity(0.5),
             child: Text(
-              "${category.title} > classes",
+              "${category != null ? category!.title : ""} > sub categories",
               style: const TextStyle(
                 fontSize: 18.0,
                 color: backgroundColor,
@@ -43,7 +43,7 @@ class ClassesPage extends StatelessWidget {
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                    child: Text("Classes not found"),
+                    child: Text("Sub categories not found"),
                   );
                 }
 
@@ -58,7 +58,9 @@ class ClassesPage extends StatelessWidget {
                   children: [
                     ...snapshot.data!
                         .where(
-                          (element) => element.category == category.id,
+                          (element) => category != null
+                              ? element.category == category!.id
+                              : true,
                         )
                         .map(
                           (e) => Padding(
@@ -79,7 +81,7 @@ class ClassesPage extends StatelessWidget {
                                 height: 60.0,
                                 decoration: BoxDecoration(
                                   color: backgroundColor,
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(4.0),
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.blue.withOpacity(
@@ -90,12 +92,26 @@ class ClassesPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                child: Text(
-                                  e.name ?? "",
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 20.0,
-                                  ),
+                                child: Column(
+                                  children: [
+                                    Flexible(
+                                      child: Image.network(
+                                        e.thumbnail ?? "",
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Center(
+                                          child: Icon(Icons.error_outline),
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      e.name ?? "",
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),

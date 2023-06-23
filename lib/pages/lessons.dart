@@ -1,13 +1,18 @@
+import 'package:e_learning_app/data/category_data.dart';
 import 'package:e_learning_app/data/constants.dart';
+import 'package:e_learning_app/data/level_data.dart';
 import 'package:e_learning_app/pages/lesson_details.dart';
 import 'package:e_learning_app/providers/lesson_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../data/lesson_data.dart';
+import '../data/topic_data.dart';
 
 class Lessons extends StatefulWidget {
-  final String? category, topic, level;
+  final Category? category;
+  final Topic? topic;
+  final Level? level;
   const Lessons({
     super.key,
     required this.category,
@@ -45,7 +50,7 @@ class _LessonsState extends State<Lessons> {
             width: double.maxFinite,
             color: primaryColor,
             child: Text(
-              "${widget.category} > ${widget.level} > ${widget.topic} > lessons",
+              "${widget.category != null ? widget.category!.title : 'category'} > ${widget.level != null ? widget.level!.name : 'sub category'} > ${widget.topic != null ? widget.topic!.name : 'topic'} > lessons",
               style: const TextStyle(
                 fontSize: 16.0,
                 color: backgroundColor,
@@ -63,10 +68,10 @@ class _LessonsState extends State<Lessons> {
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                    child: Text("Topics not found"),
+                    child: Text("Lessons not found"),
                   );
                 }
-                var filteredData = snapshot.data!
+                List<Lesson> filteredData = snapshot.data!
                     .where((element) =>
                         element.level == widget.level &&
                         element.category == widget.category &&
@@ -77,9 +82,10 @@ class _LessonsState extends State<Lessons> {
                     ...filteredData.map(
                       (e) {
                         int currentIndex = filteredData.indexOf(e);
-                        Lesson? nextLesson = currentIndex < (filteredData.length - 1)
-                            ? filteredData.elementAt(currentIndex + 1)
-                            : null;
+                        Lesson? nextLesson =
+                            currentIndex < (filteredData.length - 1)
+                                ? filteredData.elementAt(currentIndex + 1)
+                                : null;
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
