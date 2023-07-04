@@ -72,7 +72,7 @@ class TopicsPage extends StatelessWidget {
                                       builder: (context) => Lessons(
                                         category: category!,
                                         topic: e,
-                                        level: level,
+                                        sub_category: level,
                                       ),
                                     ),
                                   );

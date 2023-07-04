@@ -153,7 +153,7 @@ class LessonTile extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Text(lesson.level ?? "None")
+                          Text(lesson.sub_category ?? "None")
                         ],
                       ),
                       Row(

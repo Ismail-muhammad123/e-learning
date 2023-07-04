@@ -113,32 +113,28 @@ class _HomePageState extends State<HomePage> {
                               ),
                             );
                           },
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 60.0,
-                            padding: const EdgeInsets.all(12.0),
-                            decoration: BoxDecoration(
-                              color:
-                                  bgColors[Random().nextInt(bgColors.length)],
-                              borderRadius: BorderRadius.circular(10.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(
-                                    0.4,
-                                  ),
-                                  blurRadius: 12.0,
-                                  offset: const Offset(4, 4),
+                          
+                            child: Column(
+                                  children: [
+                                    Flexible(
+                                      child: Image.network(
+                                        e.thumbnail ?? "",
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Center(
+                                          child: Icon(Icons.error_outline),
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      e.title ?? "",
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: Text(
-                              e.title ?? "",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 20.0,
-                              ),
-                            ),
-                          ),
                         ),
                       ),
                     ),

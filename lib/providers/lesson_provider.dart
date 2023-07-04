@@ -14,6 +14,8 @@ class LessonProvider extends ChangeNotifier {
     try {
       var res = await http.get(url);
 
+      print(res.statusCode);
+
       var jsonResponse = json.decode(res.body) as List;
 
       return jsonResponse.map((e) => category.Category.fromJson(e)).toList();
@@ -24,10 +26,9 @@ class LessonProvider extends ChangeNotifier {
 
   Future<List<Lesson>?>? lessons() async {
     try {
-      var url = Uri.https(apiBaseUrl, lessonPath);
+      var url = Uri.http(apiBaseUrl, lessonPath);
 
       var res = await http.get(url);
-
       var jsonResponse = json.decode(res.body) as List;
 
       return jsonResponse.map((e) => Lesson.fromJson(e)).toList();
@@ -41,7 +42,6 @@ class LessonProvider extends ChangeNotifier {
     try {
       var res = await http.get(url);
       var jsonResponse = json.decode(res.body) as List;
-
       return jsonResponse.map((e) => Level.fromJson(e)).toList();
     } catch (e) {
       return null;
@@ -53,7 +53,6 @@ class LessonProvider extends ChangeNotifier {
 
     try {
       var res = await http.get(url);
-      print(res.body);
 
       List<Topic> jsonResponse = List<Topic>.from(
         json.decode(res.body).map((e) => Topic.fromJson(e)),

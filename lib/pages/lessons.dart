@@ -12,12 +12,12 @@ import '../data/topic_data.dart';
 class Lessons extends StatefulWidget {
   final Category? category;
   final Topic? topic;
-  final Level? level;
+  final Level? sub_category;
   const Lessons({
     super.key,
     required this.category,
     required this.topic,
-    required this.level,
+    required this.sub_category,
   });
 
   @override
@@ -50,7 +50,7 @@ class _LessonsState extends State<Lessons> {
             width: double.maxFinite,
             color: primaryColor,
             child: Text(
-              "${widget.category != null ? widget.category!.title : 'category'} > ${widget.level != null ? widget.level!.name : 'sub category'} > ${widget.topic != null ? widget.topic!.name : 'topic'} > lessons",
+              "${widget.category != null ? widget.category!.title : 'category'} > ${widget.sub_category != null ? widget.sub_category!.name : 'sub category'} > ${widget.topic != null ? widget.topic!.name : 'topic'} > lessons",
               style: const TextStyle(
                 fontSize: 16.0,
                 color: backgroundColor,
@@ -66,17 +66,23 @@ class _LessonsState extends State<Lessons> {
                     child: CircularProgressIndicator(),
                   );
                 }
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: Text("Error"),
+                  );
+                }
+                if (snapshot.data!.isEmpty) {
                   return const Center(
                     child: Text("Lessons not found"),
                   );
                 }
-                List<Lesson> filteredData = snapshot.data!
-                    .where((element) =>
-                        element.level == widget.level &&
-                        element.category == widget.category &&
-                        element.topic == widget.topic)
-                    .toList();
+                List<Lesson> filteredData = snapshot.data!;
+                // .where((element) =>
+                //     element.sub_category == widget.sub_category!.id &&
+                //     element.category == widget.category &&
+                //     element.topic == widget.topic)
+                // .toList();
+                print(filteredData);
                 return ListView(
                   children: [
                     ...filteredData.map(

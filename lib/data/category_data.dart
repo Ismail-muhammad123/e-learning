@@ -3,6 +3,7 @@ class Category {
   String? title;
   String? description;
   String? addedAt;
+  String? thumbnail;
 
   Category({this.title, this.description, this.addedAt});
 
@@ -11,6 +12,7 @@ class Category {
     title = json["title"];
     description = json["description"];
     addedAt = json["added_at"];
+    thumbnail = json["thumbnail"];
   }
 
   Map<String, dynamic> toJson() {
@@ -19,6 +21,7 @@ class Category {
     data["title"] = title;
     data["description"] = description;
     data["added_at"] = addedAt;
+    data["thumbnail"] = thumbnail;
     return data;
   }
 }
