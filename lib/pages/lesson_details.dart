@@ -29,7 +29,7 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       autoPlay: true,
-      aspectRatio: 6 / 5,
+      aspectRatio: 3 / 2,
       looping: false,
       overlay: Container(
         color: Colors.grey.withOpacity(0.2),
@@ -77,14 +77,18 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              // AspectRatio(
+              //   aspectRatio: 3 / 2,
+              //   child:
+              // ),
               SizedBox(
                 width: double.maxFinite,
-                height:
-                    MediaQuery.of(context).orientation == Orientation.portrait
-                        ? MediaQuery.of(context).size.width /
-                            _chewieController.aspectRatio!
-                        : MediaQuery.of(context).size.height /
-                            _chewieController.aspectRatio!,
+                height: MediaQuery.of(context).size.height / 3,
+                // MediaQuery.of(context).orientation == Orientation.portrait
+                //     ? MediaQuery.of(context).size.width /
+                //         _chewieController.aspectRatio!
+                //     : MediaQuery.of(context).size.height /
+                //         _chewieController.aspectRatio!,
                 child: Chewie(
                   controller: _chewieController,
                 ),

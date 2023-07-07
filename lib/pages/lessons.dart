@@ -76,12 +76,12 @@ class _LessonsState extends State<Lessons> {
                     child: Text("Lessons not found"),
                   );
                 }
-                List<Lesson> filteredData = snapshot.data!;
-                // .where((element) =>
-                //     element.sub_category == widget.sub_category!.id &&
-                //     element.category == widget.category &&
-                //     element.topic == widget.topic)
-                // .toList();
+                List<Lesson> filteredData = snapshot.data!
+                    .where((element) =>
+                        element.sub_category == widget.sub_category!.id &&
+                        element.category == widget.category!.title &&
+                        element.topic == widget.topic!.name)
+                    .toList();
                 print(filteredData);
                 return ListView(
                   children: [
