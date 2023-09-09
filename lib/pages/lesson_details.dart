@@ -1,6 +1,7 @@
 import 'package:chewie/chewie.dart';
 import 'package:e_learning_app/data/constants.dart';
 import 'package:e_learning_app/data/lesson_data.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
@@ -19,13 +20,59 @@ class LessonDetailsPage extends StatefulWidget {
 }
 
 class _LessonDetailsPageState extends State<LessonDetailsPage> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: FirebaseStorage.instance
+            .ref()
+            .child(widget.lesson.video!)
+            .getDownloadURL(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text("Lesson Content not found"),
+            );
+          }
+
+          return LessonPageContent(
+            lesson: widget.lesson,
+            videoUrl: snapshot.data!,
+            nextLesson: widget.nextLesson,
+          );
+        });
+  }
+}
+
+class LessonPageContent extends StatefulWidget {
+  final Lesson lesson;
+  final Lesson? nextLesson;
+  final String videoUrl;
+  const LessonPageContent({
+    super.key,
+    required this.lesson,
+    required this.videoUrl,
+    this.nextLesson,
+  });
+
+  @override
+  State<LessonPageContent> createState() => _LessonPageContentState();
+}
+
+class _LessonPageContentState extends State<LessonPageContent> {
   late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
 
+  _getVideoUrl() async {}
+
   @override
   void initState() {
-    _videoPlayerController =
-        VideoPlayerController.network(widget.lesson.video!);
+    _videoPlayerController = VideoPlayerController.network(widget.videoUrl);
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       autoPlay: true,
@@ -35,7 +82,7 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
         color: Colors.grey.withOpacity(0.2),
       ),
       autoInitialize: true,
-      controlsSafeAreaMinimum: EdgeInsets.all(6.0),
+      controlsSafeAreaMinimum: const EdgeInsets.all(6.0),
       placeholder: Container(
         alignment: Alignment.center,
         child: const CircularProgressIndicator(
@@ -43,6 +90,7 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
         ),
       ),
     );
+
     super.initState();
   }
 
@@ -62,10 +110,10 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
         elevation: 0,
         actions: [
           Padding(
-            padding: EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(12.0),
             child: IconButton(
               onPressed: () => _chewieController.enterFullScreen(),
-              icon: Icon(Icons.fullscreen),
+              icon: const Icon(Icons.fullscreen),
             ),
           ),
         ],
@@ -146,12 +194,12 @@ class _LessonDetailsPageState extends State<LessonDetailsPage> {
                     Text(
                       DateFormat.yMd()
                           .format(
-                            DateTime.parse(widget.lesson.addedAt ?? ""),
+                            widget.lesson.addedAt!.toDate(),
                           )
                           .toString(),
                     ),
                     const Divider(),
-                    Padding(padding: EdgeInsets.only(top: 12.0)),
+                    const Padding(padding: EdgeInsets.only(top: 12.0)),
                     Text(
                       "Next Lesson:",
                       style: TextStyle(

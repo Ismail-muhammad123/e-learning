@@ -153,7 +153,7 @@ class LessonTile extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Text(lesson.sub_category.toString())
+                          Text(lesson.subCategory ?? "")
                         ],
                       ),
                       Row(
@@ -162,7 +162,7 @@ class LessonTile extends StatelessWidget {
                           Text(
                             DateFormat.yMd()
                                 .format(
-                                  DateTime.parse(lesson.addedAt ?? ""),
+                                  lesson.addedAt!.toDate(),
                                 )
                                 .toString(),
                             style: TextStyle(

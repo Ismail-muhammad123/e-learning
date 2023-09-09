@@ -1,23 +1,18 @@
-import 'package:e_learning_app/data/category_data.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_learning_app/data/constants.dart';
-import 'package:e_learning_app/data/level_data.dart';
 import 'package:e_learning_app/pages/lesson_details.dart';
-import 'package:e_learning_app/providers/lesson_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import '../data/lesson_data.dart';
-import '../data/topic_data.dart';
 
 class Lessons extends StatefulWidget {
-  final Category? category;
-  final Topic? topic;
-  final Level? sub_category;
+  final String? category;
+  final String? topic;
+  final String? subCategory;
   const Lessons({
     super.key,
     required this.category,
     required this.topic,
-    required this.sub_category,
+    required this.subCategory,
   });
 
   @override
@@ -50,7 +45,7 @@ class _LessonsState extends State<Lessons> {
             width: double.maxFinite,
             color: primaryColor,
             child: Text(
-              "${widget.category != null ? widget.category!.title : 'category'} > ${widget.sub_category != null ? widget.sub_category!.name : 'sub category'} > ${widget.topic != null ? widget.topic!.name : 'topic'} > lessons",
+              "${widget.category != null ? widget.category! : 'category'} > ${widget.subCategory != null ? widget.subCategory! : 'sub category'} > ${widget.topic != null ? widget.topic! : 'topic'} > lessons",
               style: const TextStyle(
                 fontSize: 16.0,
                 color: backgroundColor,
@@ -58,8 +53,9 @@ class _LessonsState extends State<Lessons> {
             ),
           ),
           Flexible(
-            child: FutureBuilder(
-              future: context.read<LessonProvider>().lessons(),
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream:
+                  FirebaseFirestore.instance.collection('lessons').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -71,18 +67,29 @@ class _LessonsState extends State<Lessons> {
                     child: Text("Error"),
                   );
                 }
-                if (snapshot.data!.isEmpty) {
+                if (snapshot.data!.docs.isEmpty) {
                   return const Center(
                     child: Text("Lessons not found"),
                   );
                 }
-                List<Lesson> filteredData = snapshot.data!
-                    .where((element) =>
-                        element.sub_category == widget.sub_category!.id &&
-                        element.category == widget.category!.title &&
-                        element.topic == widget.topic!.name)
+
+                List<Lesson> filteredData = snapshot.data!.docs
+                    .map(
+                      (e) => Lesson.fromJson(e.data()),
+                    )
+                    .where(
+                      (element) =>
+                          element.subCategory!.toLowerCase() ==
+                              widget.subCategory!.toLowerCase() &&
+                          element.category!.toLowerCase() ==
+                              widget.category!.toLowerCase() &&
+                          element.topic!.toLowerCase() ==
+                              widget.topic!.toLowerCase(),
+                    )
                     .toList();
-                print(filteredData);
+
+                filteredData.sort((a, b) => a.title!.compareTo(b.title!));
+
                 return ListView(
                   children: [
                     ...filteredData.map(
@@ -107,7 +114,7 @@ class _LessonsState extends State<Lessons> {
                             },
                             child: Container(
                               alignment: Alignment.center,
-                              height: 60.0,
+                              height: 80.0,
                               decoration: BoxDecoration(
                                 color: backgroundColor,
                                 borderRadius: BorderRadius.circular(10.0),

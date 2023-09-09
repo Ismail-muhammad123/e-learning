@@ -1,19 +1,16 @@
-import 'package:e_learning_app/data/category_data.dart';
-import 'package:e_learning_app/data/level_data.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_learning_app/data/topic_data.dart';
 import 'package:e_learning_app/pages/lessons.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import '../data/constants.dart';
-import '../providers/lesson_provider.dart';
 
 class TopicsPage extends StatelessWidget {
-  final Category? category;
-  final Level? level;
+  final String? category;
+  final String? subCategory;
   const TopicsPage({
     super.key,
     required this.category,
-    required this.level,
+    required this.subCategory,
   });
 
   @override
@@ -33,7 +30,7 @@ class TopicsPage extends StatelessWidget {
             width: double.maxFinite,
             color: primaryColor,
             child: Text(
-              "${category != null ? category!.title : ''} > ${level != null ? level!.name : ''} > topics",
+              "${category != null ? category! : ''} > ${subCategory != null ? subCategory! : ''} > topics",
               style: const TextStyle(
                 fontSize: 16.0,
                 color: backgroundColor,
@@ -41,25 +38,34 @@ class TopicsPage extends StatelessWidget {
             ),
           ),
           Flexible(
-            child: FutureBuilder(
-              future: context.read<LessonProvider>().getTopics(),
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream:
+                  FirebaseFirestore.instance.collection('topics').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return const Center(
                     child: Text("Topics not found"),
                   );
                 }
 
+                var data = snapshot.data!.docs
+                    .map(
+                      (e) => Topic.fromJson(e.data()),
+                    )
+                    .toList();
+                data.sort((a, b) => a.name!.compareTo(b.name!));
+
                 return ListView(
                   children: [
-                    ...snapshot.data!
-                        .where((element) => level != null
-                            ? element.sub_category == level!.id
+                    ...data
+                        .where((element) => subCategory != null
+                            ? element.subCategory!.toLowerCase() ==
+                                subCategory!.toLowerCase()
                             : true)
                         .map(
                           (e) => Padding(
@@ -71,8 +77,8 @@ class TopicsPage extends StatelessWidget {
                                     MaterialPageRoute(
                                       builder: (context) => Lessons(
                                         category: category!,
-                                        topic: e,
-                                        sub_category: level,
+                                        topic: e.name,
+                                        subCategory: subCategory,
                                       ),
                                     ),
                                   );

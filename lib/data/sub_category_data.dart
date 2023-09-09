@@ -1,16 +1,14 @@
-class Level {
+class SUbCategory {
   int? id;
   String? name;
-  int? category;
-    String? thumbnail;
+  String? category;
+  String? thumbnail;
+  SUbCategory({this.name});
 
-
-  Level({this.name});
-
-  Level.fromJson(Map json) {
+  SUbCategory.fromJson(Map json) {
     id = json["id"];
     name = json["name"];
-        thumbnail = json["thumbnail_url"];
+    thumbnail = json["thumbnail"];
     category = json["category"];
   }
 
@@ -19,7 +17,7 @@ class Level {
     data["id"] = id;
     data["name"] = name;
     data["category"] = category;
-        data["thumbnail_url"] = thumbnail;
+    data["thumbnail"] = thumbnail;
 
     return data;
   }

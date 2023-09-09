@@ -1,4 +1,3 @@
-import 'package:e_learning_app/data/constants.dart';
 import 'package:flutter/material.dart';
 
 class AboutPage extends StatefulWidget {

@@ -1,12 +1,13 @@
-import 'package:e_learning_app/data/category_data.dart';
+import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_learning_app/data/constants.dart';
+import 'package:e_learning_app/data/sub_category_data.dart';
 import 'package:e_learning_app/pages/topics.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/lesson_provider.dart';
 
 class ClassesPage extends StatelessWidget {
-  final Category? category;
+  final String? category;
   const ClassesPage({super.key, this.category});
 
   @override
@@ -25,7 +26,7 @@ class ClassesPage extends StatelessWidget {
             width: double.maxFinite,
             color: primaryColor.withOpacity(0.5),
             child: Text(
-              "${category != null ? category!.title : ""} > sub categories",
+              "${category != null ? category! : ""} > Sub Categories",
               style: const TextStyle(
                 fontSize: 18.0,
                 color: backgroundColor,
@@ -33,19 +34,29 @@ class ClassesPage extends StatelessWidget {
             ),
           ),
           Flexible(
-            child: FutureBuilder(
-              future: context.read<LessonProvider>().levels(),
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                  .collection('sub categories')
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return const Center(
                     child: Text("Sub categories not found"),
                   );
                 }
+
+                var data = snapshot.data!.docs
+                    .map(
+                      (e) => SUbCategory.fromJson(e.data()),
+                    )
+                    .toList();
+
+                data.sort((a, b) => a.name!.compareTo(b.name!));
 
                 return GridView.count(
                   crossAxisCount:
@@ -56,10 +67,11 @@ class ClassesPage extends StatelessWidget {
                   mainAxisSpacing: 6.0,
                   padding: const EdgeInsets.all(10.0),
                   children: [
-                    ...snapshot.data!
+                    ...data
                         .where(
                           (element) => category != null
-                              ? element.category == category!.id
+                              ? element.category!.toLowerCase() ==
+                                  category!.toLowerCase()
                               : true,
                         )
                         .map(
@@ -71,7 +83,7 @@ class ClassesPage extends StatelessWidget {
                                   MaterialPageRoute(
                                     builder: (context) => TopicsPage(
                                       category: category,
-                                      level: e,
+                                      subCategory: e.name,
                                     ),
                                   ),
                                 );
@@ -95,20 +107,43 @@ class ClassesPage extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Flexible(
-                                      child: Image.network(
-                                        e.thumbnail ?? "",
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                const Center(
-                                          child: Icon(Icons.error_outline),
-                                        ),
-                                      ),
+                                      child: e.thumbnail != "" &&
+                                              e.thumbnail != null
+                                          ? FutureBuilder<Uint8List?>(
+                                              future: FirebaseStorage.instance
+                                                  .ref()
+                                                  .child(e.thumbnail!)
+                                                  .getData(),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return CircularProgressIndicator();
+                                                }
+                                                if (!snapshot.hasData ||
+                                                    snapshot.data!.isEmpty) {
+                                                  return Icon(Icons.category);
+                                                }
+                                                return Image.memory(
+                                                  snapshot.data!,
+                                                  errorBuilder: (context, error,
+                                                          stackTrace) =>
+                                                      const Center(
+                                                    child: Icon(
+                                                        Icons.error_outline),
+                                                  ),
+                                                );
+                                              },
+                                            )
+                                          : const Icon(Icons.category),
                                     ),
-                                    Text(
-                                      e.name ?? "",
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 16.0,
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        e.name ?? "",
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 16.0,
+                                        ),
                                       ),
                                     ),
                                   ],

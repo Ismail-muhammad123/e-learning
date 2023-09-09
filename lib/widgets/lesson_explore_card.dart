@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:e_learning_app/data/constants.dart';
 import 'package:e_learning_app/data/lesson_data.dart';
 import 'package:e_learning_app/pages/lesson_details.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -44,17 +47,29 @@ class _LessonCardState extends State<LessonCard> {
             children: [
               Stack(
                 children: [
-                  Image.network(
-                    widget.lesson.thumbnail!,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      width: 300,
-                      height: 180,
-                      color: primaryColor.withOpacity(0.4),
-                    ),
-                    width: 300,
-                    height: 180,
-                    fit: BoxFit.fitHeight,
-                  ),
+                  widget.lesson.thumbnail != null &&
+                          widget.lesson.thumbnail! != ""
+                      ? FutureBuilder<Uint8List?>(
+                          future: FirebaseStorage.instance
+                              .ref()
+                              .child(widget.lesson.thumbnail!)
+                              .getData(),
+                          builder: (context, snapshot) {
+                            return Image.network(
+                              widget.lesson.thumbnail!,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                width: 300,
+                                height: 180,
+                                color: primaryColor.withOpacity(0.4),
+                              ),
+                              width: 300,
+                              height: 180,
+                              fit: BoxFit.fitHeight,
+                            );
+                          },
+                        )
+                      : SizedBox(),
                   Container(
                     height: 180,
                     width: 300,
@@ -91,7 +106,7 @@ class _LessonCardState extends State<LessonCard> {
                         ),
                       ),
                       Text("Added on: ${DateFormat.yMd().format(
-                            DateTime.parse(widget.lesson.addedAt ?? ""),
+                            widget.lesson.addedAt!.toDate(),
                           ).toString()}"),
                     ],
                   ),

@@ -1,26 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Category {
-  int? id;
+  String? id;
   String? title;
   String? description;
-  String? addedAt;
+  Timestamp? addedAt;
   String? thumbnail;
 
   Category({this.title, this.description, this.addedAt});
 
   Category.fromJson(Map json) {
-    id = json["id"];
     title = json["title"];
     description = json["description"];
-    addedAt = json["added_at"];
+    addedAt = json["added at"];
     thumbnail = json["thumbnail"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data["id"] = id;
     data["title"] = title;
     data["description"] = description;
-    data["added_at"] = addedAt;
+    data["added at"] = addedAt;
     data["thumbnail"] = thumbnail;
     return data;
   }

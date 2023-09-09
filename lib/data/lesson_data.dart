@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Lesson {
   String? title;
   String? note;
@@ -5,8 +7,8 @@ class Lesson {
   String? thumbnail;
   String? category;
   String? tutor;
-  String? addedAt;
-  int? sub_category;
+  Timestamp? addedAt;
+  String? subCategory;
   String? topic;
 
   Lesson(
@@ -15,7 +17,7 @@ class Lesson {
       this.video,
       this.category,
       this.thumbnail,
-      this.sub_category,
+      this.subCategory,
       this.topic,
       this.tutor,
       this.addedAt});
@@ -27,9 +29,9 @@ class Lesson {
     video = json["video"];
     category = json["category"];
     tutor = json["tutor"];
-    sub_category = json["sub_category"];
+    subCategory = json["sub category"];
     topic = json["topic"];
-    addedAt = json["added_at"];
+    addedAt = json["added at"];
   }
 
   Map<String, dynamic> toJson() {
@@ -37,12 +39,12 @@ class Lesson {
     data["title"] = title;
     data["note"] = note;
     data["thumbnail"] = thumbnail;
-    data["sub_category"] = sub_category;
+    data["sub category"] = subCategory;
     data["topic"] = topic;
     data["video"] = video;
     data["category"] = category;
     data["tutor"] = tutor;
-    data["added_at"] = addedAt;
+    data["added at"] = addedAt;
     return data;
   }
 }
